@@ -1,8 +1,6 @@
 #!/bin/bash
 
-if [ ! -f armclient ]; then     echo "Please get Armclient using the following command: curl -sL https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz | tar -xz"; else
-
-QUERY=()
+POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -12,21 +10,29 @@ case $key in
     QUERY="$2"
     shift # past argument
     shift # past value
-    ;; 
+    ;;
     -e|--e|--effect)
     EFFECT="$2"
     shift # past argument
     shift # past value
     ;;
+    -c|--c|--create)
+    POLICY="$2"
+    shift # past argument
+    shift # past value
+    ;;
     *)    # unknown option
-    QUERY+=("$1") # save it in an array for later
+    POSITIONAL+=("$1") # save it in an array for later
     shift # past argument
     ;;
 esac
 done
-set -- "${QUERY[@]}" # restore positional parameters
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
-# Armclient is echoing the post data. using sed to remove
-eval ./armclient post '"/providers/Microsoft.ResourcesTopology.PPE/resources/policy?api-version=2017-10-05-preview&effect='${EFFECT:-audit}'"' '"'${QUERY}'"|sed "1 d"'
-
+if [ -z $POLICY ]
+then
+eval ./armclient post '"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='${EFFECT:-audit}'"' '"'${QUERY}'"'| sed '1 d'
+else
+p=$(eval ./armclient post '"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='${EFFECT:-audit}'"' '"'${QUERY}'"'| sed '1 d')
+az policy definition create --rules "${p: 18:-1}" -n $POLICY
 fi
