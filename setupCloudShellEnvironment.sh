@@ -38,7 +38,7 @@ then
 eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"'
 else
 p=$(eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"')
-az policy definition create --rules "${p: 18:-1}" -n $POLICY
+az policy definition create --rules "${p: 18:-1}" -n $POLICY --display-name $POLICY
 fi
 ' > GraphToPolicy 
 

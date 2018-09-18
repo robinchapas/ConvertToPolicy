@@ -1,12 +1,23 @@
-"# ConvertToPolicy" 
-Download setupCloudShellEnvironment.sh into cloud shell environment or your shell environement
-run "source ./setupCloudShellEnvironment.sh"
-This will set up an alias and get armclient for you.
+# ConvertToPolicy
+This tool converts a Azure Resource Graph query into a policy rule.
 
-You can also get armclient on your own here "https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz"
+You can do the following :
 
-Run commands using graph2policy or ./GraphToPolicy script.
+- Pass what action to take in the policy
+- Create a policy by passing a policy name to the script.
 
-Run the query you want to convert.
-Example: 
-graph2policy -q "where type contains 'compute'" -e "deny"
+To run this tool, you'll need to setup the environment
+1. Download setupCloudShellEnvironment.sh into cloud shell environment or your shell environement.
+2. run "source ./setupCloudShellEnvironment.sh"
+
+This will set up an alias and also install armclient in your shell.
+
+## Usage
+You can run commands using *graph2policy* or *./GraphToPolicy* script.
+
+## Examples::
+1. Generate the policy rule from Graph query with a "deny" action.
+*graph2policy -q "where type contains 'compute'" -e "deny"*
+
+2. Create a policy for a given graph query
+*graph2policy -q ="where type =~ 'microsoft.compute/virtualmachines' and isempty(aliases['Microsoft.Compute/virtualMachines/storageProfile.osDisk.managedDisk.id'])|summarize count()" --effect "audit" --create "AuditNonManagedDiskPolicy"*
