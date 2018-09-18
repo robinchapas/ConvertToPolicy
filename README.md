@@ -7,8 +7,8 @@ You can do the following :
 - Create a policy by passing a policy name to the script.
 
 To run this tool, you'll need to setup the environment
-1. Download setupCloudShellEnvironment.sh into cloud shell environment or your shell environement.
-2. run "source ./setupCloudShellEnvironment.sh"
+1. Download SetupGraphToPolicy.sh into cloud shell environment or your shell environement.
+2. run "source ./SetupGraphToPolicy.sh"
 
 This will set up an alias and also install armclient in your shell.
 
