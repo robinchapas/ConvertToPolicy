@@ -3,7 +3,9 @@
 curl -sL https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz | tar -xz
 
 echo '#!/bin/bash
-
+POLICY=""
+EFFECT=""
+QUERY=""
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
