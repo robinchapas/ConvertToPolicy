@@ -3,6 +3,7 @@
 curl -sL https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz | tar -xz
 
 echo '#!/bin/bash
+
 POLICY=""
 EFFECT=""
 QUERY=""
@@ -35,12 +36,12 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [ -z $POLICY ]
+if [ -z "$POLICY" ]
 then
-eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"'
+eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"'
 else
-p=$(eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph.PPE/resources/policy?api-version=2017-10-05-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"')
-az policy definition create --rules "${p: 18:-1}" -n $POLICY --display-name $POLICY
+p=$(eval ./armclient post '"'"'"/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect='"'\${EFFECT:-audit}'"'"'"'" "'"'"'"'\${QUERY}'"'"'"'| sed '1 d'"')
+az policy definition create --rules "${p: 18:-1}" -n "$POLICY" --display-name "$POLICY"
 fi
 ' > GraphToPolicy 
 
