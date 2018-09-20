@@ -36,8 +36,13 @@ function CreateNewPolicy
 
 function CallAzureResourceGraph
 {	
-	$response = armclient post "/providers/Microsoft.ResourcesTopology.PPE/resources/policy?api-version=2017-10-05-preview&effect=$Effect" $Query
+	$response = armclient post "/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect=$Effect" $Query
 	return $response
+}
+
+function DownloadArmClient
+{
+    curl -sL "https://github.com/chiragg4u/ConvertToPolicy/blob/master/armclient.tar.gz" | tar -xz    
 }
 
 $resp = CallAzureResourceGraph
