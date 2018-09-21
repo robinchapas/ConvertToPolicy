@@ -43,16 +43,23 @@ function CallAzureResourceGraph
 
 function DownloadArmClient
 {    
-    if([environment]::OSVersion.Platform -eq "Win32NT"){
-        $ArmClientPath = "armclient"
+    if([environment]::OSVersion.Platform -eq "Win32NT"){     
+        $global:ArmClientPath = ".\armclient.exe"        
+        $check = Test-Path($global:ArmClientPath)           
+        if( $check-eq $false){
+            [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest "http://github.com/projectkudu/ARMClient/releases/download/v1.3/ARMClient.zip" -OutFile ArmClient.zip
+            tar -xf .\ArmClient.zip *
+        }
     }
     else{
-        $ArmClientPath = "./armclient"
+        $global:ArmClientPath = "./armclient"
         $path = "./DownloadArmClient.sh"
-        $check = Test-Path($ArmClientPath)
+        $check = Test-Path($global:ArmClientPath)
         if( $check-eq $false){
             # file with path $path doesn't exist
-            # let's create and run it
+            # let's download and run it
             echo 'curl -sL https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz | tar -xz' > $path
             bash $path
         }        
@@ -66,7 +73,6 @@ function DownloadArmClient
 
 DownloadArmClient
 #echo $ArmClientPath
-
 $resp = CallAzureResourceGraph
 
 if($CreatePolicy -ne ""){
