@@ -1,0 +1,9 @@
+System.Net.Http.Formatting.dll
+AADClient.exe
+ARMClient.exe
+ARMClient.Authentication.dll
+ArmClient.zip
+Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
+Newtonsoft.Json.dll
+System.IdentityModel.Tokens.Jwt.dll

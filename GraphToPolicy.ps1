@@ -46,8 +46,7 @@ function DownloadArmClient
     if([environment]::OSVersion.Platform -eq "Win32NT"){     
         $global:ArmClientPath = ".\armclient.exe"        
         $check = Test-Path($global:ArmClientPath)           
-        if( $check-eq $false){
-            [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+        if( $check-eq $false){            
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             Invoke-WebRequest "http://github.com/projectkudu/ARMClient/releases/download/v1.3/ARMClient.zip" -OutFile ArmClient.zip
             tar -xf .\ArmClient.zip *
