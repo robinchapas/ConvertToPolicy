@@ -21,7 +21,7 @@ Param(
 	[Parameter(Mandatory=$False)]
 	[string]$Effect = "audit",
 	[Parameter(Mandatory=$False)]
-	[string]$CreatePolicy = ""	
+	[string]$CreatePolicy = ""
 )
 
 function CreateNewPolicy
@@ -31,19 +31,41 @@ function CreateNewPolicy
     $policyRule = $resp[17..($resp.Length-2)]
     $policyRule = $policyRule -join ""
     $policyRule = $policyRule -replace " ","" -replace """","'"    
+    echo $policyRule
     az policy definition create --rules ""$policyRule"" -n ""$CreatePolicy"" --display-name ""$CreatePolicy""
 }
 
 function CallAzureResourceGraph
 {	
-	$response = armclient post "/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect=$Effect" $Query
-	return $response
+	$response = & $ArmClientPath post "/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect=$Effect" $Query
+	return $response[1..$response.Length]
 }
 
 function DownloadArmClient
-{
-    curl -sL "https://github.com/chiragg4u/ConvertToPolicy/blob/master/armclient.tar.gz" | tar -xz    
+{    
+    if([environment]::OSVersion.Platform -eq "Win32NT"){
+        $ArmClientPath = "armclient"
+    }
+    else{
+        $ArmClientPath = "./armclient"
+        $path = "./DownloadArmClient.sh"
+        $check = Test-Path($ArmClientPath)
+        if( $check-eq $false){
+            # file with path $path doesn't exist
+            # let's create and run it
+            echo 'curl -sL https://github.com/yangl900/armclient-go/releases/download/v0.2.3/armclient-go_linux_64-bit.tar.gz | tar -xz' > $path
+            bash $path
+        }        
+    }    
+    # Find a way to avoid this warning
+    if(![System.IO.File]::Exists($ArmClientPath)){
+        Write-Warning "Unable to download ArmClient, the script may not work"
+        #throw [System.IO.FileNotFoundException] "armclient does not exists."
+    }
 }
+
+DownloadArmClient
+echo $ArmClientPath
 
 $resp = CallAzureResourceGraph
 
