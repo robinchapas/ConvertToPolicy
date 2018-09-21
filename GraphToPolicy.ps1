@@ -31,13 +31,16 @@ function CreateNewPolicy
     $policyRule = $resp[17..($resp.Length-2)]
     $policyRule = $policyRule -join ""
     $policyRule = $policyRule -replace " ","" -replace """","'"    
-    echo $policyRule
-    az policy definition create --rules ""$policyRule"" -n ""$CreatePolicy"" --display-name ""$CreatePolicy""
+    #echo $policyRule
+    az policy definition create --rules ""$policyRule"" --name ""$CreatePolicy"" --display-name ""$CreatePolicy""
 }
 
 function CallAzureResourceGraph
 {	
 	$response = & $ArmClientPath post "/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect=$Effect" $Query
+    if($response[0] -eq "{") {
+        return $response
+    }
 	return $response[1..$response.Length]
 }
 
@@ -49,7 +52,7 @@ function DownloadArmClient
         if( $check-eq $false){            
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             Invoke-WebRequest "http://github.com/projectkudu/ARMClient/releases/download/v1.3/ARMClient.zip" -OutFile ArmClient.zip
-            tar -xf .\ArmClient.zip *
+            Expand-Archive .\ArmClient.zip -DestinationPath .
         }
     }
     else{
