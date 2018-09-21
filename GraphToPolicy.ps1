@@ -65,7 +65,7 @@ function DownloadArmClient
 }
 
 DownloadArmClient
-echo $ArmClientPath
+#echo $ArmClientPath
 
 $resp = CallAzureResourceGraph
 
