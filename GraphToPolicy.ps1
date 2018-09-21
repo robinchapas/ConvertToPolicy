@@ -37,6 +37,11 @@ function CreateNewPolicy
 
 function CallAzureResourceGraph
 {	
+    & $ArmClientPath token *>$null
+	if (-not ($?))
+	{
+		& $ArmClientPath login *>$null
+	}
 	$response = & $ArmClientPath post "/providers/Microsoft.ResourceGraph/resources/policy?api-version=2018-09-01-preview&effect=$Effect" $Query
     if($response[0] -eq "{") {
         return $response
@@ -67,9 +72,9 @@ function DownloadArmClient
         }        
     }    
     # Find a way to avoid this warning
-    if(![System.IO.File]::Exists($ArmClientPath)){
-        Write-Warning "Unable to download ArmClient, the script may not work"
-        #throw [System.IO.FileNotFoundException] "armclient does not exists."
+    if(-not (Test-Path $ArmClientPath)){
+        Write-Error "Unable to find ArmClient, the script would not work"
+        throw [System.IO.FileNotFoundException] "armclient does not exists."
     }
 }
 
