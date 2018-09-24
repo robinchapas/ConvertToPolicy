@@ -1,4 +1,4 @@
-# ConvertToPolicy
+# ConvertToPolicy using Shell
 This tool converts an Azure Resource Graph query into a policy rule.
 
 You can do the following :
