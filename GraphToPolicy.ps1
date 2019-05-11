@@ -21,18 +21,29 @@ Param(
 	[Parameter(Mandatory=$False)]
 	[string]$Effect = "audit",
 	[Parameter(Mandatory=$False)]
-	[string]$CreatePolicy = ""
+	[string]$CreatePolicy = "",
+	[Parameter(Mandatory=$False)]
+	[string]$ManagementGroupName = ""
 )
 
 function CreateNewPolicy
 {
+    param(
+        [string]
+        $ManagementGroupName
+    )
 	echo "Creating policy '$CreatePolicy' ..."
     $resp = $resp -join ""
     $policyRule = $resp[17..($resp.Length-2)]
     $policyRule = $policyRule -join ""
-    $policyRule = $policyRule -replace " ","" -replace """","'"    
-    #echo $policyRule
-    az policy definition create --rules ""$policyRule"" --name ""$CreatePolicy"" --display-name ""$CreatePolicy""
+    $policyRule = $policyRule -replace " ","" -replace """","'"
+    if($ManagementGroupName) {
+        #echo $policyRule
+        az policy definition create --rules ""$policyRule"" --name ""$CreatePolicy"" --display-name ""$CreatePolicy"" --management-group ""$ManagementGroupName""
+    } else {
+        #echo $policyRule
+        az policy definition create --rules ""$policyRule"" --name ""$CreatePolicy"" --display-name ""$CreatePolicy""
+    }
 }
 
 function CallAzureResourceGraph
@@ -83,8 +94,7 @@ DownloadArmClient
 $resp = CallAzureResourceGraph
 
 if($CreatePolicy -ne ""){
-    CreateNewPolicy
+    CreateNewPolicy -ManagementGroupName $ManagementGroupName
 } else {
     echo $resp
 }
- 
